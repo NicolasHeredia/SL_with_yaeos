@@ -43,6 +43,7 @@ contains
       type(hyperdual) :: frac_segment_ij
       type(hyperdual) :: rho_SL
       type(hyperdual) :: T_SL
+      type(hyperdual) :: T1, T2, T3, T4
 
       integer :: i, j
 
@@ -81,10 +82,13 @@ contains
          rho_SL = segment_mix * vol_mix / v ! densidad reducida
          T_SL = R * t / eppsilon_mix ! temperatura reducida
 
-         ar = (&
-            sum(n) *  R * t &
-            * ( - (rho_SL / T_SL) + (1.0_pr / rho_SL - 1.0_pr) * log(1.0_pr - rho_SL) + 1.0_pr) &
-            )
+         T1 = sum(n) *  R * t * segment_mix
+         T2 = (- rho_SL / T_SL)
+         T3 = 1.0_pr / rho_SL
+         T4 = log(1.0_pr - rho_SL)
+
+         ar = T1 * (T2 + T3 * T4 + 1.0_pr) 
+
       end associate
    end function
 
