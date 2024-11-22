@@ -82,7 +82,7 @@ contains
          rho_SL = segment_mix * vol_mix / v ! densidad reducida
          T_SL = R * t / eppsilon_mix ! temperatura reducida
 
-         T1 = sum(n) *  R * t * segment_mix
+         T1 = segment_mix * sum(n) *  R * t !(nada por perder, hago lo mismo que Clapeyron)
          T2 = (- rho_SL / T_SL)
          T3 = 1.0_pr / rho_SL
          T4 = log(1.0_pr - rho_SL)
@@ -98,17 +98,38 @@ contains
       real(pr), intent(in) :: n(:)
       real(pr), intent(in) :: p
       real(pr), intent(in) :: t
+      real(pr) :: vol_mix
+      real(pr) :: frac_segment_ij
       real(pr) :: x(size(n))
       real(pr) :: segment_mix
       real(pr) :: frac_segment(size(n))
       real(pr) :: v0
+
+      integer :: i, j
 
       x = n / sum(n)
       segment_mix = sum(self%segment * x)
 
       frac_segment = (x * self%segment) / segment_mix
 
-      v0 = sum(frac_segment * self%vol) ! siguiendo una regla de mezclado mas simple, Neur tabla 1, primera regla.
+      ! ==================================================================
+      ! Regla de mezclado
+      ! ------------------------------------------------------------------
+      vol_mix = 0.0_pr
+
+      do i=1,size(n)-1
+         do j=i+1,size(n)
+            frac_segment_ij = frac_segment(i) * frac_segment(j)
+            vol_mix = vol_mix + (1.0_pr / 2.0_pr) * frac_segment_ij * (self%vol(i) + self%vol(j)) * (1 - self%lij(i, j))
+         end do
+      end do
+      ! Añadido de la diagonal de la regla de mezclado
+      vol_mix = vol_mix + sum(frac_segment**2 * self%vol)
+
+      !------!
+      !--v0--!
+      !------!
+      v0 = vol_mix * segment_mix
    end function
 
    subroutine volume(eos, n, P, T, V, root_type)
@@ -118,10 +139,11 @@ contains
       real(pr), intent(in) :: T !! Temperature [K]
       real(pr), intent(out) :: V !! Volume [L]
       character(len=*), intent(in) :: root_type
+
       !! Desired root-type to solve. Options are:
-      !! `["liquid", "vapor", "stable"]`
-      integer :: max_iters !! Maxiumum number of iterations, defaults to 100
+      !! `["liquid", "vapor", "stable"]
 
       call volume_michelsen(eos, n, P, T, V, root_type)
+
    end subroutine
 end module

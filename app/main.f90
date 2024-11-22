@@ -13,24 +13,28 @@ program main
 
 
   real(pr) :: V, T, P
+  real(pr) :: V_0
   type(hd_SL) :: model
   type(hyperdual) :: Ar
 
-  integer :: i
+  integer :: i, max_it
+
+  ! Abrir archivo directamente
+  open(unit=10, file="output.txt", status="replace")
 
   ! Parametros
   n = [1.0_pr]
-  segments = [4.26_pr]
-  volumes = [7.52_pr]
-  epsilons = [1864.96_pr]
+  segments = [8.564_pr]
+  volumes = [3.638e-03_pr] ! L * bar
+  epsilons = [22.76660_pr] ! L*bar / mol
 
   ! The mixrule
   kij = 0.0_pr
   lij = 0.0_pr
 
   ! Conditions
-  T = 110.5_pr
-  P = 46.04_pr
+  T = 250.0_pr ! K
+  ! P = 60.0_pr ! bar
 
   ! Crear el modelo y calcular Ar
   model = setup(segments, volumes, epsilons, kij, lij)
@@ -38,17 +42,19 @@ program main
   !call model%lnphi_pt(n, P, T, lnPhi=phi_v, root_type="stable")
   !print *, phi_v
 
-  V = 1.0
-  ! do i=1,5000
-  !  V = real(i, pr)/1000
-  !  call model%pressure(n, V, T, P=P)
-  !  write(1, *) V, P
-  !end do
+  do i=1,10000
+    V = real(i, pr)/1000
+    call model%pressure(n, V, T, P=P)
+    write(10, '(E20.12, 2X, E20.12)') V, P
+  end do
 
-  call model%volume(n, P=P, T=T, V=V, root_type="stable")
-  print *, V, P
+  ! Cerrar el archivo
+  close(10)
 
-  call model%pressure(n, V=V, T=T, P=P)
-  print *, P, T
+  !call model%volume(n, P=P, T=T, V=V, root_type="stable")
+  !print *, V, P
+
+  !call model%pressure(n, V=V, T=T, P=P)
+  !print *, P, T
 
 end program
