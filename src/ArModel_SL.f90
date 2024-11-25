@@ -82,9 +82,9 @@ contains
          rho_SL = segment_mix * vol_mix / v ! densidad reducida
          T_SL = R * t / eppsilon_mix ! temperatura reducida
 
-         T1 = segment_mix * sum(n) *  R * t !(nada por perder, hago lo mismo que Clapeyron)
+         T1 = segment_mix * sum(n) *  R * t 
          T2 = (- rho_SL / T_SL)
-         T3 = 1.0_pr / rho_SL
+         T3 = (1.0_pr / rho_SL) - 1.0_pr
          T4 = log(1.0_pr - rho_SL)
 
          ar = T1 * (T2 + T3 * T4 + 1.0_pr) 

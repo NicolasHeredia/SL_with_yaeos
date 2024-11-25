@@ -26,7 +26,7 @@ program calc_presion
    open(unit=10, file="presion.txt", status="replace")
 
    do i=1,1000
-      V = real(i, pr)/100
+      V = real(i, pr)/1000
       call pressure_SL(T, V, P_SL, T_SL, rho_SL, r_SL, P)
       write(10, '(E20.12, 2X, E20.12)') V, P
     end do

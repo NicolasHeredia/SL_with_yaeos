@@ -9,11 +9,8 @@ program main
   integer :: n_components
   real(pr) :: n(1), segments(1), volumes(1), epsilons(1)
   real(pr) :: kij(1, 1), lij(1, 1)
-  real(pr) :: dPdV, dPdT, dPdn(1)
-
-
+  
   real(pr) :: V, T, P
-  real(pr) :: V_0
   type(hd_SL) :: model
   type(hyperdual) :: Ar
 
@@ -35,8 +32,6 @@ program main
   ! Conditions
   T = 175.0_pr ! K
   ! P = 60.0_pr ! bar
-
-  print *, 'quiero ver si corre'
 
   ! Crear el modelo y calcular Ar
   model = setup(segments, volumes, epsilons, kij, lij)
