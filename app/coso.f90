@@ -24,17 +24,19 @@ program main
 
   ! Parametros
   n = [1.0_pr]
-  segments = [8.564_pr]
-  volumes = [3.638e-03_pr] ! L * bar
-  epsilons = [22.76660_pr] ! L*bar / mol
+  segments = [4.26_pr]
+  volumes = [0.00752_pr] ! L * bar
+  epsilons = [18.6244_pr] ! L*bar / mol
 
   ! The mixrule
   kij = 0.0_pr
   lij = 0.0_pr
 
   ! Conditions
-  T = 250.0_pr ! K
+  T = 175.0_pr ! K
   ! P = 60.0_pr ! bar
+
+  print *, 'quiero ver si corre'
 
   ! Crear el modelo y calcular Ar
   model = setup(segments, volumes, epsilons, kij, lij)
@@ -42,7 +44,7 @@ program main
   !call model%lnphi_pt(n, P, T, lnPhi=phi_v, root_type="stable")
   !print *, phi_v
 
-  do i=1,10000
+  do i=1,1000
     V = real(i, pr)/1000
     call model%pressure(n, V, T, P=P)
     write(10, '(E20.12, 2X, E20.12)') V, P
