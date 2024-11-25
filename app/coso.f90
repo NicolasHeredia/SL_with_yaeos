@@ -6,15 +6,15 @@ program main
 
   implicit none
 
-  integer :: n_components
   real(pr) :: n(1), segments(1), volumes(1), epsilons(1)
   real(pr) :: kij(1, 1), lij(1, 1)
-  
+
   real(pr) :: V, T, P
+  real(pr) :: phi_v(1)
   type(hd_SL) :: model
   type(hyperdual) :: Ar
 
-  integer :: i, max_it
+  integer :: i
 
   ! Abrir archivo directamente
   open(unit=10, file="output.txt", status="replace")
@@ -36,8 +36,8 @@ program main
   ! Crear el modelo y calcular Ar
   model = setup(segments, volumes, epsilons, kij, lij)
 
-  !call model%lnphi_pt(n, P, T, lnPhi=phi_v, root_type="stable")
-  !print *, phi_v
+  call model%lnphi_pt(n, P, T, lnPhi=phi_v, root_type="stable")
+  print *, phi_v
 
   do i=1,1000
     V = real(i, pr)/1000
@@ -48,10 +48,12 @@ program main
   ! Cerrar el archivo
   close(10)
 
-  !call model%volume(n, P=P, T=T, V=V, root_type="stable")
-  !print *, V, P
+  P = 60.0_pr ! bar
 
-  !call model%pressure(n, V=V, T=T, P=P)
-  !print *, P, T
+  call model%volume(n, P=P, T=T, V=V, root_type="stable")
+  print *, V, P, 1.0_pr / V
+
+  call model%pressure(n, V=V, T=T, P=P)
+  print *, P, T
 
 end program
