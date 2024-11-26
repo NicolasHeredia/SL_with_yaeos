@@ -19,7 +19,7 @@ program main
   ! Abrir archivo directamente
   open(unit=10, file="output.txt", status="replace")
 
-  ! Parametros
+  ! Parametros del metano en las unidades correspondientes
   n = [1.0_pr]
   segments = [4.26_pr]
   volumes = [0.00752_pr] ! L * bar
