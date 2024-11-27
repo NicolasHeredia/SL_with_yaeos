@@ -53,14 +53,15 @@ program flash_SL_polymer
    model_SL = setup(r_SL, vol_SL, epsilon_SL, kij, lij)
 
    ! initialization
-   phase_1_mass = [1.0 - 7.44e-03, 7.443-03]      ! mass fraction
+   phase_1_mass = [1.0 - 7.44e-03, 7.443e-03]      ! mass fraction
    phase_2_mass = [1.0 - 1.977e-01, 1.977e-01]    ! mass fraction
 
-   phase_1_mol = (phase_1_mass * mw) / sum(phase_1_mass * mw)
-   phase_2_mol = (phase_2_mass * mw) / sum(phase_2_mass * mw)
+   phase_1_mol = (phase_1_mass / mw) / sum(phase_1_mass / mw)
+   phase_2_mol = (phase_2_mass / mw) / sum(phase_2_mass / mw)
 
 
    k0 = phase_2_mol / phase_1_mol
+   k0 = [250.0, 0.001]
    print *, 'k0 = ', k0
 
    flash_result = flash(model_SL, n, t=t, p_spec=p, k0=k0, iters=iter)
