@@ -60,7 +60,7 @@ program flash_SL_polymer
    phase_2_mol = (phase_2_mass * mw) / sum(phase_2_mass * mw)
 
 
-   k0 = phase_1_mol / phase_2_mol
+   k0 = phase_2_mol / phase_1_mol
    print *, 'k0 = ', k0
 
    flash_result = flash(model_SL, n, t=t, p_spec=p, k0=k0, iters=iter)
